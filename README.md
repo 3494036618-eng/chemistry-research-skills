@@ -123,7 +123,7 @@ uv run python -m pytest -q
 ### 使用方式
 
 本项目按 Agent Skills 标准组织，面向支持 Agent Skills 规范的各类 Agent，
-不绑定 TRAE 或任何单一客户端。不同 Agent 的发现目录和扩展字段可能不同；
+不绑定任何单一客户端。不同 Agent 的发现目录和扩展字段可能不同；
 当前安装器内置 TRAE、Codex 和 Claude Code 的项目级目录适配，其他兼容 Agent
 可以直接加载 `skills/<skill-name>/`，或按其目录规范添加轻量适配。
 
@@ -273,8 +273,8 @@ chain, workflow, clarification, confirmation, or unsupported result.
 
 ### Quick Start
 
-Designed for Agent Skills-compatible agents, this project is not tied to TRAE
-or any single client. The installer currently includes project-directory
+Designed for Agent Skills-compatible agents, this project is not tied to any
+single client. The installer currently includes project-directory
 adapters for TRAE, Codex, and Claude Code. Other compatible agents can load
 `skills/<skill-name>/` directly or use a lightweight directory adapter.
 
