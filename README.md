@@ -205,7 +205,11 @@ uv run python examples/workflow-a-b-e2e/run_acceptance.py \
 - 7 个科学 Skill：离线代码与合同测试已实现
 - Workflow A/B：离线运行、Human Gate、resume 和完整性校验已实现
 - Router：确定性核心、安装器和离线 smoke 已实现
-- 最新 Bundle 的真实 Claude Code、Codex、TRAE Host 认证：尚未全部完成
+- TRAE 单客户端真实调用：已通过。TRAE 从自然语言选择并执行
+  `standardize-chemical-structures` → `compute-molecular-features`，
+  两步输出均通过公开 Validator
+- 本轮未调用确定性 Router，因此不能将该结果表述为 Router 真实 Host 认证
+- Codex、Claude Code 最新 Bundle 真实调用：尚未完成
 - 化学专家验收与真实用户验收：尚未完成
 - 生产可用声明：无
 
@@ -302,7 +306,13 @@ run an experiment.
 - Scientific Skills: seven
 - Orchestration Skill: one
 - Offline workflows: two
-- Latest cross-host certification: pending
+- TRAE single-host live acceptance: passed. TRAE selected and executed
+  `standardize-chemical-structures` followed by
+  `compute-molecular-features` from a natural-language request; both outputs
+  passed the public validators
+- The deterministic Router was not invoked in this run, so this is not a live
+  Router certification
+- Codex and Claude Code live acceptance: pending
 - Chemistry expert and real-user acceptance: pending
 
 ### License

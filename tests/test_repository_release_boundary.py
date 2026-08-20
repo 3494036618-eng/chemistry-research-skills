@@ -134,6 +134,17 @@ def test_public_metadata_excludes_personal_identifiers():
             assert identifier not in text, f"{identifier!r} found in {relative}"
 
 
+def test_readme_reports_bounded_trae_host_acceptance():
+    readme = (REPOSITORY_ROOT / "README.md").read_text(encoding="utf-8")
+
+    assert "TRAE 单客户端真实调用：已通过" in readme
+    assert "本轮未调用确定性 Router" in readme
+    assert "Codex、Claude Code 最新 Bundle 真实调用：尚未完成" in readme
+    assert "TRAE single-host live acceptance: passed" in readme
+    assert "The deterministic Router was not invoked in this run" in readme
+    assert "Codex and Claude Code live acceptance: pending" in readme
+
+
 def test_release_dependency_files_exclude_private_candidate():
     pyproject = tomllib.loads(
         (REPOSITORY_ROOT / "pyproject.toml").read_text(encoding="utf-8")
