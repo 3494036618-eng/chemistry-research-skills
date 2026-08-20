@@ -40,6 +40,7 @@ PUBLIC_METADATA_FILES = {
     "CITATION.cff",
     "SECURITY.md",
     "CODE_OF_CONDUCT.md",
+    "package.json",
     ".github/ISSUE_TEMPLATE/config.yml",
 }
 FORBIDDEN_PUBLIC_IDENTIFIERS = {
@@ -130,6 +131,10 @@ def test_router_is_standard_discoverable_but_not_scientific_skill():
 def test_public_metadata_excludes_personal_identifiers():
     for relative in PUBLIC_METADATA_FILES:
         text = (REPOSITORY_ROOT / relative).read_text(encoding="utf-8")
+        text = text.replace(
+            "github:3494036618-eng/chemistry-research-skills",
+            "github:PUBLIC_REPOSITORY/chemistry-research-skills",
+        )
         for identifier in FORBIDDEN_PUBLIC_IDENTIFIERS:
             assert identifier not in text, f"{identifier!r} found in {relative}"
 
@@ -138,11 +143,68 @@ def test_readme_reports_representative_live_host_acceptance():
     readme = (REPOSITORY_ROOT / "README.md").read_text(encoding="utf-8")
 
     assert "真实 Host 端到端验证：代表性自然语言链路已通过" in readme
+    assert "npx github:3494036618-eng/chemistry-research-skills install" in readme
     assert "Representative live-host acceptance: passed" in readme
+    assert "npx github:3494036618-eng/chemistry-research-skills install" in readme
     assert "单客户端" not in readme
     assert "single-host" not in readme
     assert "Codex、Claude Code 最新 Bundle 真实调用" not in readme
     assert "Codex and Claude Code live acceptance" not in readme
+
+
+def test_npm_manifest_exposes_npx_installer():
+    package = json.loads((REPOSITORY_ROOT / "package.json").read_text(encoding="utf-8"))
+
+    assert package["name"] == EXPECTED_PROJECT_NAME
+    assert package["version"] == "0.1.0-alpha.2"
+    assert package["bin"] == {
+        "chemistry-research-skills": "bin/chemistry-research-skills.mjs",
+    }
+    assert package["license"] == "Apache-2.0"
+    assert package.get("private") is not True
+    assert "bin" in package["files"]
+    assert "skills" in package["files"]
+    assert "uv.lock" in package["files"]
+
+
+def test_node_installer_supports_help_and_dry_run(tmp_path):
+    import subprocess
+
+    bin_path = REPOSITORY_ROOT / "bin" / "chemistry-research-skills.mjs"
+
+    help_result = subprocess.run(
+        ["node", str(bin_path), "--help"],
+        cwd=REPOSITORY_ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert "chemistry-research-skills install" in help_result.stdout
+    assert "--target-root" in help_result.stdout
+
+    dry_run = subprocess.run(
+        [
+            "node",
+            str(bin_path),
+            "install",
+            "--host",
+            "trae",
+            "--target-root",
+            str(tmp_path),
+            "--dry-run",
+            "--json",
+        ],
+        cwd=REPOSITORY_ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    result = json.loads(dry_run.stdout)
+    assert result["status"] == "dry_run"
+    assert result["host"] == "trae"
+    assert result["targetRoot"] == str(tmp_path)
+    assert any("install_bundle.py" in " ".join(item) for item in result["commands"])
+    assert any("uv" in item[0] and "sync" in item for item in result["commands"])
 
 
 def test_release_dependency_files_exclude_private_candidate():

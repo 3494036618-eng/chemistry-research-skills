@@ -58,11 +58,13 @@ ORCHESTRATION_SKILLS = ("chemistry-research-router",)
 ROOT_FILES = (
     ".gitattributes",
     ".gitignore",
+    ".npmignore",
     "CITATION.cff",
     "CODE_OF_CONDUCT.md",
     "CONTRIBUTING.md",
     "LICENSE",
     "NOTICE",
+    "package.json",
     "plugin.json",
     "README.md",
     "SECURITY.md",
@@ -176,6 +178,8 @@ def validate_structure(errors: list[str]) -> None:
     for relative in ROOT_FILES:
         if not (ROOT / relative).is_file():
             errors.append(f"missing root file: {relative}")
+    if not (ROOT / "bin" / "chemistry-research-skills.mjs").is_file():
+        errors.append("missing Node installer: bin/chemistry-research-skills.mjs")
 
     actual_skills = {path.name for path in SKILLS_ROOT.iterdir() if path.is_dir()}
     expected_skills = set(SKILLS) | set(ORCHESTRATION_SKILLS)

@@ -132,6 +132,17 @@ uv run python -m pytest -q
 当前经过离线安装测试的 Host 为 TRAE、Codex 和 Claude Code：
 
 ```bash
+npx github:3494036618-eng/chemistry-research-skills install \
+  --host trae \
+  --target-root /path/to/existing-project
+```
+
+该 Node 入口只负责调用仓库内的 Python 安装器，并自动为目标项目同步
+`.chemistry-agent-bundle/runtime` 环境；科学计算仍由 Python Skill 执行。
+
+备用的显式 Python 安装命令：
+
+```bash
 uv run python skills/chemistry-research-router/scripts/install_bundle.py \
   --host trae \
   --scope project \
@@ -268,16 +279,23 @@ uv run python -m pytest -q
 Install the complete project-scoped bundle:
 
 ```bash
+npx github:3494036618-eng/chemistry-research-skills install \
+  --host trae \
+  --target-root /path/to/existing-project
+```
+The Node entrypoint delegates to the Python installer and runs the target
+runtime `uv sync` step automatically. Supported installer values are
+`claude-code`, `codex`, and `trae`.
+
+Equivalent explicit Python installer:
+
+```bash
 uv run python skills/chemistry-research-router/scripts/install_bundle.py \
-  --host claude-code \
+  --host trae \
   --scope project \
   --source-root . \
   --target-root /path/to/existing-project
 ```
-
-Supported installer values are `claude-code`, `codex`, and `trae`. Host
-directory mapping and offline installation tests do not by themselves prove
-real model discovery or routing quality.
 
 ### Reproducible Examples
 
